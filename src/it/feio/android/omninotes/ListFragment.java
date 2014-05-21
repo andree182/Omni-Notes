@@ -35,6 +35,7 @@ import it.feio.android.omninotes.utils.AppTourHelper;
 import it.feio.android.omninotes.utils.Constants;
 import it.feio.android.omninotes.utils.Display;
 import it.feio.android.omninotes.utils.Navigation;
+import it.feio.android.omninotes.utils.sync.drive.DriveSyncTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -368,6 +369,7 @@ public class ListFragment extends Fragment implements UndoListener, OnNotesLoade
 				menu.findItem(R.id.menu_unarchive).setVisible(archive);
 				menu.findItem(R.id.menu_category).setVisible(true);
 				menu.findItem(R.id.menu_trash).setVisible(true);
+				menu.findItem(R.id.menu_synchronize).setVisible(true);	
 				menu.findItem(R.id.menu_settings).setVisible(false);
 			}
 			return true;
@@ -402,6 +404,9 @@ public class ListFragment extends Fragment implements UndoListener, OnNotesLoade
 				return true;
 			case R.id.menu_delete:
 				deleteSelectedNotes();
+				return true;
+			case R.id.menu_synchronize:
+				synchronizeSelectedNotes();
 				return true;
 			default:
 				return false;
@@ -547,7 +552,7 @@ public class ListFragment extends Fragment implements UndoListener, OnNotesLoade
 		menu.findItem(R.id.menu_add_category).setVisible(drawerOpen);
 //		menu.findItem(R.id.menu_tags).setVisible(!drawerOpen);
 		menu.findItem(R.id.menu_expanded_view).setVisible(!drawerOpen && !expandedView);
-		menu.findItem(R.id.menu_contracted_view).setVisible(!drawerOpen && expandedView);	
+		menu.findItem(R.id.menu_contracted_view).setVisible(!drawerOpen && expandedView);
 		menu.findItem(R.id.menu_settings).setVisible(!drawerOpen);
 	}
 
@@ -1328,6 +1333,19 @@ public class ListFragment extends Fragment implements UndoListener, OnNotesLoade
 		note.setCategory(category);
 		db.updateNote(note, false);
 	}
+	
+	
+	private void synchronizeSelectedNotes() {
+		new DriveSyncTask(getActivity()).execute(new ArrayList<>(selectedNotes));
+		// Clears data structures
+		mAdapter.clearSelectedItems();
+		listView.clearChoices();
+		finishActionMode();
+	}
+	
+	
+	
+	
 	
 
 	@Override

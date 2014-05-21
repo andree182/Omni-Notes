@@ -78,7 +78,7 @@ public class DriveActivity extends Activity implements ConnectionCallbacks,
 			list.add(f);
 		}
 		
-		new DriveSyncTask(mContext).execute(list);
+//		new DriveSyncTask(mContext).execute(list);
 	}
 
 	/**
